@@ -92,11 +92,11 @@ resource 'compute',
 
 resource 'storage',
   :cookbook => 'oneops.1.storage',
-  :requires => { 'constraint' => '1..1', 'services' => 'storage' }
+  :requires => { 'constraint' => '1..*', 'services' => 'storage' }
 
 resource 'volume',
   :cookbook => 'oneops.1.volume',
-  :requires => {'constraint' => '1..1', 'services' => 'compute,storage'},
+  :requires => {'constraint' => '1..*', 'services' => 'compute,storage'},
   :attributes => { 'mount_point'    => '$OO_LOCAL{data_drive}' }
 
 resource 'vol-temp',
@@ -149,7 +149,7 @@ resource 'custom-config',
      :as_group      => 'Administrators'
 }
 
-[
+[ 
   { :from => 'storage', :to => 'os' },
   { :from => 'vol-temp', :to => 'os' },
   { :from => 'dotnetframework', :to => 'vol-temp' },
