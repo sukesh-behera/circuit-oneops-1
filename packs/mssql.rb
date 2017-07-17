@@ -18,12 +18,15 @@ variable 'data_drive',
   :description => 'Data Drive',
   :value       => 'F'
 
+variable 'tcp_port',
+  :description => 'TCP Port',
+  :value       => '1433'
 
 resource 'secgroup',
          :cookbook => 'oneops.1.secgroup',
          :design => true,
          :attributes => {
-             'inbound' => '[ "22 22 tcp 0.0.0.0/0", "1433 1433 tcp 0.0.0.0/0", "3389 3389 tcp 0.0.0.0/0"]'
+             'inbound' => '[ "22 22 tcp 0.0.0.0/0", "$OO_LOCAL{tcp_port} $OO_LOCAL{tcp_port} tcp 0.0.0.0/0", "3389 3389 tcp 0.0.0.0/0"]'
          },
          :requires => {
              :constraint => '1..1',
@@ -40,6 +43,7 @@ resource 'mssql',
   },
   :attributes   => {
     'version' => 'mssql_2014_enterprise',
+    'tcp_port' => '$OO_LOCAL{tcp_port}',
     'tempdb_data' => '$OO_LOCAL{temp_drive}:\\MSSQL',
     'tempdb_log' => '$OO_LOCAL{temp_drive}:\\MSSQL',
     'userdb_data' => '$OO_LOCAL{data_drive}:\\MSSQL\\UserData',
