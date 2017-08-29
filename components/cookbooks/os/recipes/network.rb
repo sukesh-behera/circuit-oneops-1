@@ -313,11 +313,12 @@ end
 
 case node.platform
 when "fedora","redhat","centos"
-  file = "/etc/sysconfig/network-scripts/ifcfg-eth0"
+  active_interface = "`ip route list|grep default |awk '{print $5}'`"
+  file = "/etc/sysconfig/network-scripts/ifcfg-#{active_interface}"
   `grep PERSISTENT_DHCLIENT #{file}`
   if $?.to_i != 0
-    Chef::Log.info("DHCLIENT setting ifcfg-eth0 - network restart")
-    `echo "PERSISTENT_DHCLIENT=1" >> #{file} ; /sbin/service network restart`
+    Chef::Log.info("PERSISTENT DHCLIENT setting - network restart")
+    `echo -e "\nPERSISTENT_DHCLIENT=1" >> #{file} ; /sbin/service network restart`
   else
     Chef::Log.info("DHCLIENT already configured")
   end
